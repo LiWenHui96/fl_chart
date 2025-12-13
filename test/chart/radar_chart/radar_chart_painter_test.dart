@@ -538,6 +538,17 @@ void main() {
             borderColor: MockData.color1,
             borderWidth: 1,
           ),
+          RadarDataSet(
+            dataEntries: [
+              const RadarEntry(value: 2),
+              const RadarEntry(value: 3),
+              const RadarEntry(value: 1),
+            ],
+            fillColor: MockData.color1,
+            fillGradient: MockData.gradient1,
+            borderColor: MockData.color1,
+            borderWidth: 1,
+          ),
         ],
         getTitle: (index, angle) {
           return RadarChartTitle(text: '$index$index', angle: angle);

@@ -20,12 +20,16 @@ enum RadarShape {
 class RadarChartTitle {
   const RadarChartTitle({
     required this.text,
+    this.children,
     this.angle = 0,
     this.positionPercentageOffset,
   });
 
   /// [text] is used to draw titles outside the [RadarChart]
   final String text;
+
+  /// [children] is used to draw additional titles outside the [RadarChart]
+  final List<InlineSpan>? children;
 
   /// [angle] is used to rotate the title
   final double angle;
@@ -70,6 +74,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
     BorderSide? tickBorderData,
     BorderSide? gridBorderData,
     RadarTouchData? radarTouchData,
+    this.isMinValueAtCenter = false,
     super.borderData,
   })  : assert(dataSets != null && dataSets.hasEqualDataEntriesLength),
         assert(
@@ -154,6 +159,9 @@ class RadarChartData extends BaseChartData with EquatableMixin {
   /// Handles touch behaviors and responses.
   final RadarTouchData radarTouchData;
 
+  /// If [isMinValueAtCenter] is true, the minimum value of the [RadarChart] will be at the center of the chart.
+  final bool isMinValueAtCenter;
+
   /// [titleCount] we use this value to determine number of [RadarChart] grid or lines.
   int get titleCount => dataSets[0].dataEntries.length;
 
@@ -199,6 +207,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
     BorderSide? tickBorderData,
     BorderSide? gridBorderData,
     RadarTouchData? radarTouchData,
+    bool? isMinValueAtCenter,
     FlBorderData? borderData,
   }) =>
       RadarChartData(
@@ -215,6 +224,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         tickBorderData: tickBorderData ?? this.tickBorderData,
         gridBorderData: gridBorderData ?? this.gridBorderData,
         radarTouchData: radarTouchData ?? this.radarTouchData,
+        isMinValueAtCenter: isMinValueAtCenter ?? this.isMinValueAtCenter,
         borderData: borderData ?? this.borderData,
       );
 
@@ -241,6 +251,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         radarShape: b.radarShape,
         tickBorderData: BorderSide.lerp(a.tickBorderData, b.tickBorderData, t),
         borderData: FlBorderData.lerp(a.borderData, b.borderData, t),
+        isMinValueAtCenter: b.isMinValueAtCenter,
         radarTouchData: b.radarTouchData,
       );
     } else {
@@ -265,6 +276,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         tickBorderData,
         gridBorderData,
         radarTouchData,
+        isMinValueAtCenter,
       ];
 }
 
@@ -281,6 +293,7 @@ class RadarDataSet with EquatableMixin {
   RadarDataSet({
     List<RadarEntry>? dataEntries,
     Color? fillColor,
+    this.fillGradient,
     Color? borderColor,
     double? borderWidth,
     double? entryRadius,
@@ -300,6 +313,9 @@ class RadarDataSet with EquatableMixin {
   /// defines the color that fills the [RadarDataSet].
   final Color fillColor;
 
+  // defines the gradient color that fills the [RadarDataSet].
+  final Gradient? fillGradient;
+
   /// defines the border color of the [RadarDataSet].
   /// if [borderColor] is not defined it will replaced with [fillColor].
   final Color borderColor;
@@ -317,6 +333,7 @@ class RadarDataSet with EquatableMixin {
   RadarDataSet copyWith({
     List<RadarEntry>? dataEntries,
     Color? fillColor,
+    Gradient? fillGradient,
     Color? borderColor,
     double? borderWidth,
     double? entryRadius,
@@ -324,6 +341,7 @@ class RadarDataSet with EquatableMixin {
       RadarDataSet(
         dataEntries: dataEntries ?? this.dataEntries,
         fillColor: fillColor ?? this.fillColor,
+        fillGradient: fillGradient,
         borderColor: borderColor ?? this.borderColor,
         borderWidth: borderWidth ?? this.borderWidth,
         entryRadius: entryRadius ?? this.entryRadius,
@@ -334,6 +352,7 @@ class RadarDataSet with EquatableMixin {
       RadarDataSet(
         dataEntries: lerpRadarEntryList(a.dataEntries, b.dataEntries, t),
         fillColor: Color.lerp(a.fillColor, b.fillColor, t),
+        fillGradient: Gradient.lerp(a.fillGradient, b.fillGradient, t),
         borderColor: Color.lerp(a.borderColor, b.borderColor, t),
         borderWidth: lerpDouble(a.borderWidth, b.borderWidth, t),
         entryRadius: lerpDouble(a.entryRadius, b.entryRadius, t),
@@ -344,6 +363,7 @@ class RadarDataSet with EquatableMixin {
   List<Object?> get props => [
         dataEntries,
         fillColor,
+        fillGradient,
         borderColor,
         borderWidth,
         entryRadius,

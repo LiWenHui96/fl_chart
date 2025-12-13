@@ -31,12 +31,14 @@ When you change the chart's state, it animates to the new state internally (usin
 |tickBorderData|Style of the tick borders|BorderSide(color: Colors.black, width: 2)|
 |gridBorderData|Style of the grid borders|BorderSide(color: Colors.black, width: 2)|
 |radarTouchData|[RadarTouchData](#radartouchdata-read-about-touch-handling) handles the touch behaviors and responses.|RadarTouchData()|
+|isMinValueAtCenter|If true, the minimum value of the [RadarChart] will be at the center of the chart.|false|
 
 ### RadarDataSet
 |PropName		|Description	|default value|
 |:---------------|:---------------|:-------|
 |dataEntries|Each RadarDataSet contains list of [RadarEntries ](#RadarEntry) that is shown in RadarChart.|[]|
 |fillColor|fills the DataSet with the specified color.|Colors.black12|
+|fillGradient|fills the DataSet with the specified gradient colors.| null |
 |borderColor|Paint the DataSet border with the specified color.|Colors.blueAccent|
 |borderWidth|defines the width of [RadarDataSet](#RadarDataSet) border.|2.0|
 |entryRadius|defines the radius of each [RadarEntries ](#RadarEntry).|5.0|
