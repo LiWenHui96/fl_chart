@@ -26,12 +26,12 @@ When you change the chart's state, it animates to the new state internally (usin
 |getTitle| This function helps the radar chart to draw titles outside the chart. The default angle provided when called is making the title tangent to the radar chart. |null|
 |titleTextStyle|TextStyle of the titles|TextStyle(color: Colors.black, fontSize: 12)|
 |titlePositionPercentageOffset|this field is the place of showing title on the RadarChart. The higher the value of this field, the more titles move away from the chart. this field should be between 0 and 1.|0.2|
-|tickCount|Defines the number of ticks that should be paint in RadarChart|1|
-|ticksTextStyle|TextStyle of the tick titles|TextStyle(fontSize: 10, color: Colors.black)|
-|tickBorderData|Style of the tick borders|BorderSide(color: Colors.black, width: 2)|
+|ticksData|Defines ticks for [RadarChart]|null|
 |gridBorderData|Style of the grid borders|BorderSide(color: Colors.black, width: 2)|
 |radarTouchData|[RadarTouchData](#radartouchdata-read-about-touch-handling) handles the touch behaviors and responses.|RadarTouchData()|
 |isMinValueAtCenter|If true, the minimum value of the [RadarChart] will be at the center of the chart.|false|
+|maxValue|Define the maximum value of the [RadarChart]|null|
+|minValue|Define the minimum value of the [RadarChart]|null|
 
 ### RadarDataSet
 |PropName		|Description	|default value|
@@ -42,6 +42,19 @@ When you change the chart's state, it animates to the new state internally (usin
 |borderColor|Paint the DataSet border with the specified color.|Colors.blueAccent|
 |borderWidth|defines the width of [RadarDataSet](#RadarDataSet) border.|2.0|
 |entryRadius|defines the radius of each [RadarEntries ](#RadarEntry).|5.0|
+|entryColor|defines the color of each entry|null|
+|dotColor|defines the color of each entry dot|null|
+|dotWidth|defines the width of each entry dot|null|
+
+### RadarTicksData
+|PropName		|Description	|default value|
+|:---------------|:---------------|:------|
+|backgroundColors|Define the background color of the [RadarChart] tick|null|
+|count|Defines the number of ticks that should be paint in [RadarChart]|1|
+|showText|Defines whether to show [RadarChart] tick titles|true|
+|textStyle|Defines style of showing [RadarChart] tick titles|TextStyle(fontSize: 10, color: Colors.black)|
+|showBorder|Defines whether to show [RadarChart] tick borders|true|
+|borderSide|Defines style of showing [RadarChart] tick borders|BorderSide(color: Colors.black, width: 2)|
 
 ### RadarEntry
 |PropName		|Description	|default value|

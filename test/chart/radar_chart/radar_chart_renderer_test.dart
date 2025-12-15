@@ -16,12 +16,12 @@ void main() {
   group('RadarChartRenderer', () {
     final data = RadarChartData(
       dataSets: [MockData.radarDataSet1],
-      tickCount: 1,
+      ticksData: const RadarTicksData(count: 1),
     );
 
     final targetData = RadarChartData(
       dataSets: [MockData.radarDataSet2],
-      tickCount: 1,
+      ticksData: const RadarTicksData(count: 1),
     );
 
     const textScaler = TextScaler.linear(4);

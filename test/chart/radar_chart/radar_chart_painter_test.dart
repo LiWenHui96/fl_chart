@@ -113,7 +113,9 @@ void main() {
           ),
         ],
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         radarBackgroundColor: MockData.color2,
       );
 
@@ -205,7 +207,9 @@ void main() {
         ],
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
         radarShape: RadarShape.polygon,
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         radarBackgroundColor: MockData.color2,
       );
 
@@ -292,7 +296,9 @@ void main() {
           ),
         ],
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         gridBorderData: const BorderSide(color: MockData.color3, width: 3),
         radarBackgroundColor: MockData.color2,
       );
@@ -381,7 +387,9 @@ void main() {
         ],
         titleTextStyle: MockData.textStyle4,
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         gridBorderData: const BorderSide(color: MockData.color3, width: 3),
         radarBackgroundColor: MockData.color2,
       );
@@ -439,7 +447,9 @@ void main() {
         },
         titleTextStyle: MockData.textStyle4,
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         gridBorderData: const BorderSide(color: MockData.color3, width: 3),
         radarBackgroundColor: MockData.color2,
       );
@@ -555,7 +565,9 @@ void main() {
         },
         titleTextStyle: MockData.textStyle4,
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         gridBorderData: const BorderSide(color: MockData.color3, width: 3),
         radarBackgroundColor: MockData.color2,
       );
@@ -706,7 +718,9 @@ void main() {
           ),
         ],
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         radarBackgroundColor: MockData.color2,
         getTitle: (index, angle) {
           return RadarChartTitle(text: '$index-$angle', angle: angle);
@@ -798,7 +812,9 @@ void main() {
           ),
         ],
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         radarBackgroundColor: MockData.color2,
         getTitle: (index, angle) {
           return RadarChartTitle(text: '$index-$angle');
@@ -1113,7 +1129,9 @@ void main() {
         ],
         titleTextStyle: MockData.textStyle4,
         radarBorderData: const BorderSide(color: MockData.color6, width: 33),
-        tickBorderData: const BorderSide(color: MockData.color5, width: 55),
+        ticksData: const RadarTicksData(
+          borderSide: BorderSide(color: MockData.color5, width: 55),
+        ),
         gridBorderData: const BorderSide(color: MockData.color3, width: 3),
         radarBackgroundColor: MockData.color2,
       );
@@ -1178,19 +1196,19 @@ void main() {
     );
     final dataWith1Tick = RadarChartData(
       dataSets: [dataSet],
-      tickCount: 1,
+      ticksData: const RadarTicksData(count: 1),
     );
     final dataWith2Ticks = RadarChartData(
       dataSets: [dataSet],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
     final dataWith3Ticks = RadarChartData(
       dataSets: [dataSet],
-      tickCount: 3,
+      ticksData: const RadarTicksData(count: 3),
     );
     final dataWithSameMaxAndMin = RadarChartData(
       dataSets: [dataSetWithSameMaxAndMin],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
 
     test('test 1', () {
@@ -1219,7 +1237,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
     final dataWithSameMaxAndMin = RadarChartData(
       dataSets: [
@@ -1231,7 +1249,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
     const radius = 200.0;
     const point1 = RadarEntry(value: 0);
@@ -1290,7 +1308,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
     final dataWithSameMaxAndMin = RadarChartData(
       dataSets: [
@@ -1302,7 +1320,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
 
     test('test 1', () {
@@ -1329,7 +1347,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
     final dataWithSameMaxAndMin = RadarChartData(
       dataSets: [
@@ -1341,7 +1359,7 @@ void main() {
           ],
         ),
       ],
-      tickCount: 2,
+      ticksData: const RadarTicksData(count: 2),
     );
 
     test('test 1', () {

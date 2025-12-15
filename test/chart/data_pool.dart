@@ -3207,9 +3207,11 @@ final RadarChartData radarChartData1 = RadarChartData(
   titlePositionPercentageOffset: 0.2,
   titleTextStyle: const TextStyle(color: Colors.white, fontSize: 12),
   radarTouchData: radarTouchData1,
-  tickCount: 5,
-  tickBorderData: const BorderSide(width: 4),
-  ticksTextStyle: const TextStyle(color: Colors.white, fontSize: 12),
+  ticksData: const RadarTicksData(
+    count: 5,
+    borderSide: BorderSide(width: 4),
+    textStyle: TextStyle(color: Colors.white, fontSize: 12),
+  ),
 );
 
 final RadarChartData radarChartData1Clone = radarChartData1.copyWith();
@@ -3224,9 +3226,11 @@ final RadarChartData radarChartData2 = RadarChartData(
   titlePositionPercentageOffset: 0.5,
   titleTextStyle: const TextStyle(color: Colors.black, fontSize: 5),
   radarTouchData: radarTouchData2,
-  tickCount: 1,
-  tickBorderData: const BorderSide(color: Colors.pink, width: 2),
-  ticksTextStyle: const TextStyle(color: Colors.purple, fontSize: 10),
+  ticksData: const RadarTicksData(
+    count: 1,
+    borderSide: BorderSide(color: Colors.pink, width: 2),
+    textStyle: TextStyle(color: Colors.purple, fontSize: 10),
+  ),
 );
 
 const Line line1 = Line(Offset.zero, Offset(10, 10));

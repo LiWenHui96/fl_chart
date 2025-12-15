@@ -26,6 +26,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
     _gridPaint = Paint()..style = PaintingStyle.stroke;
 
     _tickPaint = Paint()..style = PaintingStyle.stroke;
+    _tickBackgroundPaint = Paint()..style = PaintingStyle.fill;
 
     _graphPaint = Paint();
     _graphBorderPaint = Paint();
@@ -33,10 +34,12 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
     _ticksTextPaint = TextPainter();
     _titleTextPaint = TextPainter();
   }
+
   late Paint _borderPaint;
   late Paint _backgroundPaint;
   late Paint _gridPaint;
   late Paint _tickPaint;
+  late Paint _tickBackgroundPaint;
   late Paint _graphPaint;
   late Paint _graphBorderPaint;
   late Paint _graphPointPaint;
@@ -62,8 +65,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     dataSetsPosition = calculateDataSetsPosition(canvasWrapper.size, holder);
 
-    drawGrids(canvasWrapper, holder);
     drawTicks(context, canvasWrapper, holder);
+    drawGrids(canvasWrapper, holder);
     drawTitles(context, canvasWrapper, holder);
     drawDataSets(canvasWrapper, holder);
   }
@@ -109,9 +112,10 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     final dataSetMaxValue = data.maxEntry.value;
     final dataSetMinValue = data.minEntry.value;
+    final tickCount = data.ticksData.count;
 
     return dataSetMaxValue == dataSetMinValue
-        ? (dataSetMaxValue - defaultCenterValue) / (data.tickCount + 1) +
+        ? (dataSetMaxValue - defaultCenterValue) / (tickCount + 1) +
             defaultCenterValue
         : dataSetMinValue;
   }
@@ -120,15 +124,16 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
   double getSpaceBetweenTicks(RadarChartData data) {
     final dataSetMaxValue = data.maxEntry.value;
     final dataSetMinValue = data.minEntry.value;
+    final tickCount = data.ticksData.count;
 
     if (data.isMinValueAtCenter) {
-      return (dataSetMaxValue - dataSetMinValue) / (data.tickCount);
+      return (dataSetMaxValue - dataSetMinValue) / tickCount;
     }
 
     final defaultCenterValue = getDefaultChartCenterValue();
-    final tickSpace = (dataSetMaxValue - dataSetMinValue) / data.tickCount;
+    final tickSpace = (dataSetMaxValue - dataSetMinValue) / tickCount;
     final defaultTickSpace =
-        (dataSetMaxValue - defaultCenterValue) / (data.tickCount + 1);
+        (dataSetMaxValue - defaultCenterValue) / (tickCount + 1);
 
     return dataSetMaxValue == dataSetMinValue ? defaultTickSpace : tickSpace;
   }
@@ -177,8 +182,9 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
     final tickSpace = getSpaceBetweenTicks(data);
     final ticks = <double>[];
     var tickValue = getFirstTickValue(data);
+    final ticksData = data.ticksData;
 
-    for (var i = 0; i <= data.tickCount; i++) {
+    for (var i = 0; i <= ticksData.count; i++) {
       ticks.add(tickValue);
       tickValue += tickSpace;
     }
@@ -187,35 +193,76 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ? radius / (ticks.length - 1)
         : radius / ticks.length;
 
+    final backgroundColors = ticksData.backgroundColors;
+    if (backgroundColors != null && backgroundColors.isNotEmpty) {
+      Map.fromEntries(ticks.asMap().entries.toList().reversed).forEach(
+        (index, tick) {
+          final tickRadius =
+              tickDistance * (index + (data.isMinValueAtCenter ? 0 : 1));
+
+          _tickBackgroundPaint.color = backgroundColors.reversed
+              .toList()[index % backgroundColors.length];
+
+          if (data.radarShape == RadarShape.circle) {
+            canvasWrapper.drawCircle(
+              centerOffset,
+              tickRadius,
+              _tickBackgroundPaint,
+            );
+          } else {
+            canvasWrapper.drawPath(
+              _generatePolygonPath(
+                centerX,
+                centerY,
+                tickRadius,
+                data.titleCount,
+              ),
+              _tickBackgroundPaint,
+            );
+          }
+        },
+      );
+    }
+
     _tickPaint
-      ..color = data.tickBorderData.color
-      ..strokeWidth = data.tickBorderData.width;
+      ..color = ticksData.borderSide.color
+      ..strokeWidth = ticksData.borderSide.width;
 
     /// draw radar ticks
     ticks.sublist(0, ticks.length - 1).asMap().forEach(
       (index, tick) {
         final tickRadius =
             tickDistance * (index + (data.isMinValueAtCenter ? 0 : 1));
-        if (data.radarShape == RadarShape.circle) {
-          canvasWrapper.drawCircle(centerOffset, tickRadius, _tickPaint);
-        } else {
-          canvasWrapper.drawPath(
-            _generatePolygonPath(centerX, centerY, tickRadius, data.titleCount),
-            _tickPaint,
-          );
+        if (ticksData.showBorder) {
+          if (data.radarShape == RadarShape.circle) {
+            canvasWrapper.drawCircle(centerOffset, tickRadius, _tickPaint);
+          } else {
+            canvasWrapper.drawPath(
+              _generatePolygonPath(
+                centerX,
+                centerY,
+                tickRadius,
+                data.titleCount,
+              ),
+              _tickPaint,
+            );
+          }
         }
 
-        _ticksTextPaint
-          ..text = TextSpan(
-            text: tick.toStringAsFixed(1),
-            style: Utils().getThemeAwareTextStyle(context, data.ticksTextStyle),
-          )
-          ..textDirection = TextDirection.ltr
-          ..layout(maxWidth: size.width);
-        canvasWrapper.drawText(
-          _ticksTextPaint,
-          Offset(centerX + 5, centerY - tickRadius - _ticksTextPaint.height),
-        );
+        if (ticksData.showText) {
+          _ticksTextPaint
+            ..text = TextSpan(
+              text: tick.toStringAsFixed(1),
+              style:
+                  Utils().getThemeAwareTextStyle(context, ticksData.textStyle),
+            )
+            ..textDirection = TextDirection.ltr
+            ..layout(maxWidth: size.width);
+          canvasWrapper.drawText(
+            _ticksTextPaint,
+            Offset(centerX + 5, centerY - tickRadius - _ticksTextPaint.height),
+          );
+        }
       },
     );
   }
@@ -373,7 +420,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..strokeWidth = graph.borderWidth;
 
       _graphPointPaint
-        ..color = _graphBorderPaint.color
+        ..color = graph.entryColor ?? _graphBorderPaint.color
         ..style = PaintingStyle.fill;
 
       final path = Path();
@@ -384,29 +431,38 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       );
 
       path.moveTo(firstOffset.dx, firstOffset.dy);
-
-      canvasWrapper.drawCircle(
-        firstOffset,
-        graph.entryRadius,
-        _graphPointPaint,
-      );
       dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
         if (index == 0) return;
-
         path.lineTo(pointOffset.dx, pointOffset.dy);
-
-        canvasWrapper.drawCircle(
-          pointOffset,
-          graph.entryRadius,
-          _graphPointPaint,
-        );
       });
 
       path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
         ..drawPath(path, _graphBorderPaint);
+
+      drawDots(canvasWrapper, firstOffset, graph);
+      dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
+        if (index == 0) return;
+        drawDots(canvasWrapper, pointOffset, graph);
+      });
     });
+  }
+
+  void drawDots(CanvasWrapper canvasWrapper, Offset offset, RadarDataSet data) {
+    canvasWrapper.drawCircle(offset, data.entryRadius, _graphPointPaint);
+
+    final dotWidth = data.dotWidth ?? 0;
+    final dotColor = data.dotColor;
+    if (dotColor != null) {
+      canvasWrapper.drawCircle(
+        offset,
+        dotWidth / 2,
+        Paint()
+          ..color = dotColor
+          ..style = PaintingStyle.fill,
+      );
+    }
   }
 
   RadarTouchedSpot? handleTouch(
