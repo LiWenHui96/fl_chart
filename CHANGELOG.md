@@ -1,3 +1,12 @@
+## 0.69.3
+* **FEATURE** (by @frybitsinc) Add fillGradient property in [RadarDataSet](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/radar_chart.md#radardataset)
+* **FEATURE** (by @frybitsinc) Add `children` property in our [RadarChartTitle](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/radar_chart.md#radarcharttitle), #1840
+* **FEATURE** (by @soraef) Add `isMinValueAtCenter` property in the [RadarChart](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/radar_chart.md) to allow the user to set the minimum value at the center of the chart, #1351, #1442
+* **FEATURE** Add ticksData instead of tickCount, ticksTextStyle, tickBorderData to [RadarChartData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarChartData).
+* **FEATURE** Add tickData.backgroundColors, ticksData.showText, ticksData.showBorder to [RadarTicksData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarTicksData).
+* **FEATURE** Add maxValue, minValue property to [RadarChartData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarChartData).
+* **FEATURE** Add entryColor, dotColor, dotWidth to [RadarDataSet](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#radardataset).
+
 ## 0.69.2
 * **IMPROVEMENT** (by @imaNNeo) Fix the analyzer warnings (to have maximum score in the [pub.dev](https://pub.dev/packages/fl_chart/score))
 
