@@ -1,3 +1,9 @@
+## 1.1.1-1
+* **FEATURE** Add ticksData instead of tickCount, ticksTextStyle, tickBorderData to [RadarChartData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarChartData).
+* **FEATURE** Add tickData.backgroundColors, ticksData.showText, ticksData.showBorder to [RadarTicksData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarTicksData).
+* **FEATURE** Add maxValue, minValue property to [RadarChartData](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#RadarChartData).
+* **FEATURE** Add entryColor, dotColor, dotWidth to [RadarDataSet](https://github.com/LiWenHui96/fl_chart/blob/0.69.2-radar/repo_files/documentations/radar_chart.md#radardataset).
+
 ## 1.1.1
 * **IMPROVEMENT** (by @imaNNeo) Upgrade `vector_math` dependency to `2.2.0`, #1985
 * **IMPROVEMENT** (by @imaNNeo) Upgrade `build_runner` (dev) dependency to `2.8.0`
