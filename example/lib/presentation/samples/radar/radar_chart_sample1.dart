@@ -181,10 +181,11 @@ class _RadarChartSample1State extends State<RadarChartSample1> {
                       return const RadarChartTitle(text: '');
                   }
                 },
-                tickCount: 1,
-                ticksTextStyle:
-                    const TextStyle(color: Colors.transparent, fontSize: 10),
-                tickBorderData: const BorderSide(color: Colors.transparent),
+                ticksData: const RadarTicksData(
+                  count: 1,
+                  textStyle: TextStyle(color: Colors.transparent, fontSize: 10),
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
                 gridBorderData: BorderSide(color: widget.gridColor, width: 2),
               ),
               duration: const Duration(milliseconds: 400),
