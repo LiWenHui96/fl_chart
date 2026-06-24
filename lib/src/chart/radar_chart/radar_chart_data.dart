@@ -41,6 +41,57 @@ class RadarChartTitle {
   final double? positionPercentageOffset;
 }
 
+/// It draws some ticks, and you can customize the number of ticks by modifying the [count]
+/// and style the ticks titles with [textStyle].
+///
+/// For changing the ticks color and border width you can use [borderSide].
+class RadarTicksData {
+  const RadarTicksData({
+    this.backgroundColors,
+    int? count,
+    this.showText = true,
+    this.textStyle,
+    this.showBorder = true,
+    BorderSide? borderSide,
+  })  : assert(
+          count == null || count >= 1,
+          "RadarChart need's at least 1 tick",
+        ),
+        count = count ?? 1,
+        borderSide = borderSide ?? const BorderSide(width: 2);
+
+  /// Define the background color of the [RadarChart] tick.
+  final List<Color>? backgroundColors;
+
+  /// Defines the number of ticks that should be paint in [RadarChart]
+  /// the default & minimum value of this field is 1.
+  final int count;
+
+  /// Defines whether to show [RadarChart] tick titles.
+  final bool showText;
+
+  /// Defines style of showing [RadarChart] tick titles.
+  final TextStyle? textStyle;
+
+  /// Defines whether to show [RadarChart] tick borders.
+  final bool showBorder;
+
+  /// Defines style of showing [RadarChart] tick borders.
+  final BorderSide borderSide;
+
+  /// Lerps a [FlBorderData] based on [t] value, check [Tween.lerp].
+  static RadarTicksData lerp(RadarTicksData a, RadarTicksData b, double t) =>
+      RadarTicksData(
+        backgroundColors:
+            lerpColorList(a.backgroundColors, b.backgroundColors, t),
+        count: lerpInt(a.count, b.count, t),
+        showText: b.showText,
+        textStyle: TextStyle.lerp(a.textStyle, b.textStyle, t),
+        showBorder: b.showBorder,
+        borderSide: BorderSide.lerp(a.borderSide, b.borderSide, t),
+      );
+}
+
 /// [RadarChart] needs this class to render itself.
 ///
 /// It holds data needed to draw a radar chart,
@@ -56,9 +107,8 @@ class RadarChartData extends BaseChartData with EquatableMixin {
   /// for changing the titles you can modify the [getTitle] field.
   /// and for styling the titles you can use [titleTextStyle].
   ///
-  /// it draws some ticks. and you can customize the number of ticks by modifying the [titleCount]
-  /// and style the ticks titles with [ticksTextStyle].
-  /// for changing the ticks color and border width you can use [tickBorderData].
+  /// it draws some ticks based on the number of [dataSets] values.
+  /// for changing the ticks you can modify the [ticksData] field.
   ///
   /// You can modify [radarTouchData] to customize touch behaviors and responses.
   RadarChartData({
@@ -69,18 +119,19 @@ class RadarChartData extends BaseChartData with EquatableMixin {
     this.getTitle,
     this.titleTextStyle,
     double? titlePositionPercentageOffset,
-    int? tickCount,
-    this.ticksTextStyle,
+    @Deprecated('Please use [ticksData.count] instead') int? tickCount,
+    @Deprecated('Please use [ticksData.textStyle] instead')
+    TextStyle? ticksTextStyle,
+    @Deprecated('Please use [ticksData.borderSide] instead')
     BorderSide? tickBorderData,
+    RadarTicksData? ticksData,
     BorderSide? gridBorderData,
     RadarTouchData? radarTouchData,
     this.isMinValueAtCenter = false,
+    this.maxValue,
+    this.minValue,
     super.borderData,
   })  : assert(dataSets != null && dataSets.hasEqualDataEntriesLength),
-        assert(
-          tickCount == null || tickCount >= 1,
-          "RadarChart need's at least 1 tick",
-        ),
         assert(
           titlePositionPercentageOffset == null ||
               titlePositionPercentageOffset >= 0 &&
@@ -93,8 +144,7 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         radarShape = radarShape ?? RadarShape.circle,
         radarTouchData = radarTouchData ?? RadarTouchData(),
         titlePositionPercentageOffset = titlePositionPercentageOffset ?? 0.2,
-        tickCount = tickCount ?? 1,
-        tickBorderData = tickBorderData ?? const BorderSide(width: 2),
+        ticksData = ticksData ?? const RadarTicksData(),
         gridBorderData = gridBorderData ?? const BorderSide(width: 2),
         super();
 
@@ -141,15 +191,8 @@ class RadarChartData extends BaseChartData with EquatableMixin {
   /// the default value is 0.2.
   final double titlePositionPercentageOffset;
 
-  /// Defines the number of ticks that should be paint in [RadarChart]
-  /// the default & minimum value of this field is 1.
-  final int tickCount;
-
-  /// Defines style of showing [RadarChart] tick titles.
-  final TextStyle? ticksTextStyle;
-
-  /// Defines style of showing [RadarChart] tick borders.
-  final BorderSide tickBorderData;
+  /// Defines ticks for [RadarChart].
+  final RadarTicksData ticksData;
 
   /// Defines style of showing [RadarChart] grid borders.
   final BorderSide gridBorderData;
@@ -160,12 +203,20 @@ class RadarChartData extends BaseChartData with EquatableMixin {
   /// If [isMinValueAtCenter] is true, the minimum value of the [RadarChart] will be at the center of the chart.
   final bool isMinValueAtCenter;
 
+  /// Define the maximum value of the [RadarChart].
+  final double? maxValue;
+
+  /// Define the minimum value of the [RadarChart].
+  final double? minValue;
+
   /// [titleCount] we use this value to determine number of [RadarChart] grid or lines.
   int get titleCount => dataSets[0].dataEntries.length;
 
   /// defines the maximum [RadarEntry] value in all [dataSets]
   /// we use this value to calculate the maximum value of ticks.
   RadarEntry get maxEntry {
+    if (maxValue != null) return RadarEntry(value: maxValue!);
+
     var maximum = dataSets.first.dataEntries.first;
 
     for (final dataSet in dataSets) {
@@ -179,6 +230,8 @@ class RadarChartData extends BaseChartData with EquatableMixin {
   /// defines the minimum [RadarEntry] value in all [dataSets]
   /// we use this value to calculate the minimum value of ticks.
   RadarEntry get minEntry {
+    if (minValue != null) return RadarEntry(value: minValue!);
+
     var minimum = dataSets.first.dataEntries.first;
 
     for (final dataSet in dataSets) {
@@ -200,12 +253,12 @@ class RadarChartData extends BaseChartData with EquatableMixin {
     GetTitleByIndexFunction? getTitle,
     TextStyle? titleTextStyle,
     double? titlePositionPercentageOffset,
-    int? tickCount,
-    TextStyle? ticksTextStyle,
-    BorderSide? tickBorderData,
+    RadarTicksData? ticksData,
     BorderSide? gridBorderData,
     RadarTouchData? radarTouchData,
     bool? isMinValueAtCenter,
+    double? maxValue,
+    double? minValue,
     FlBorderData? borderData,
   }) =>
       RadarChartData(
@@ -217,12 +270,12 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,
         titlePositionPercentageOffset:
             titlePositionPercentageOffset ?? this.titlePositionPercentageOffset,
-        tickCount: tickCount ?? this.tickCount,
-        ticksTextStyle: ticksTextStyle ?? this.ticksTextStyle,
-        tickBorderData: tickBorderData ?? this.tickBorderData,
+        ticksData: ticksData ?? this.ticksData,
         gridBorderData: gridBorderData ?? this.gridBorderData,
         radarTouchData: radarTouchData ?? this.radarTouchData,
         isMinValueAtCenter: isMinValueAtCenter ?? this.isMinValueAtCenter,
+        maxValue: maxValue ?? this.maxValue,
+        minValue: minValue ?? this.minValue,
         borderData: borderData ?? this.borderData,
       );
 
@@ -241,15 +294,15 @@ class RadarChartData extends BaseChartData with EquatableMixin {
           b.titlePositionPercentageOffset,
           t,
         ),
-        tickCount: lerpInt(a.tickCount, b.tickCount, t),
-        ticksTextStyle: TextStyle.lerp(a.ticksTextStyle, b.ticksTextStyle, t),
+        ticksData: RadarTicksData.lerp(a.ticksData, b.ticksData, t),
         gridBorderData: BorderSide.lerp(a.gridBorderData, b.gridBorderData, t),
         radarBorderData:
             BorderSide.lerp(a.radarBorderData, b.radarBorderData, t),
         radarShape: b.radarShape,
-        tickBorderData: BorderSide.lerp(a.tickBorderData, b.tickBorderData, t),
         borderData: FlBorderData.lerp(a.borderData, b.borderData, t),
         isMinValueAtCenter: b.isMinValueAtCenter,
+        maxValue: lerpDouble(a.maxValue, b.maxValue, t),
+        minValue: lerpDouble(a.minValue, b.minValue, t),
         radarTouchData: b.radarTouchData,
       );
     } else {
@@ -268,12 +321,12 @@ class RadarChartData extends BaseChartData with EquatableMixin {
         getTitle,
         titleTextStyle,
         titlePositionPercentageOffset,
-        tickCount,
-        ticksTextStyle,
-        tickBorderData,
+        ticksData,
         gridBorderData,
         radarTouchData,
         isMinValueAtCenter,
+        maxValue,
+        minValue,
       ];
 }
 
@@ -294,6 +347,9 @@ class RadarDataSet with EquatableMixin {
     Color? borderColor,
     double? borderWidth,
     double? entryRadius,
+    this.entryColor,
+    this.dotColor,
+    this.dotWidth,
   })  : assert(
           dataEntries == null || dataEntries.isEmpty || dataEntries.length >= 3,
           'Radar needs at least 3 RadarEntry',
@@ -325,6 +381,18 @@ class RadarDataSet with EquatableMixin {
   /// the default value of this field is 5.0
   final double entryRadius;
 
+  /// defines the color of each entry
+  /// the default value of this field is null
+  final Color? entryColor;
+
+  /// defines the color of each entry dot
+  /// the default value of this field is null
+  final Color? dotColor;
+
+  /// defines the width of each entry dot
+  /// the default value of this field is null
+  final double? dotWidth;
+
   /// Copies current [RadarDataSet] to a new [RadarDataSet],
   /// and replaces provided values.
   RadarDataSet copyWith({
@@ -334,6 +402,9 @@ class RadarDataSet with EquatableMixin {
     Color? borderColor,
     double? borderWidth,
     double? entryRadius,
+    Color? entryColor,
+    Color? dotColor,
+    double? dotWidth,
   }) =>
       RadarDataSet(
         dataEntries: dataEntries ?? this.dataEntries,
@@ -342,6 +413,9 @@ class RadarDataSet with EquatableMixin {
         borderColor: borderColor ?? this.borderColor,
         borderWidth: borderWidth ?? this.borderWidth,
         entryRadius: entryRadius ?? this.entryRadius,
+        entryColor: entryColor ?? this.entryColor,
+        dotColor: dotColor ?? this.dotColor,
+        dotWidth: dotWidth ?? this.dotWidth,
       );
 
   /// Lerps a [RadarDataSet] based on [t] value, check [Tween.lerp].
@@ -353,6 +427,9 @@ class RadarDataSet with EquatableMixin {
         borderColor: Color.lerp(a.borderColor, b.borderColor, t),
         borderWidth: lerpDouble(a.borderWidth, b.borderWidth, t),
         entryRadius: lerpDouble(a.entryRadius, b.entryRadius, t),
+        entryColor: Color.lerp(a.entryColor, b.entryColor, t),
+        dotColor: Color.lerp(a.dotColor, b.dotColor, t),
+        dotWidth: lerpDouble(a.dotWidth, b.dotWidth, t),
       );
 
   /// Used for equality check, see [EquatableMixin].
@@ -364,6 +441,9 @@ class RadarDataSet with EquatableMixin {
         borderColor,
         borderWidth,
         entryRadius,
+        entryColor,
+        dotColor,
+        dotWidth,
       ];
 }
 
